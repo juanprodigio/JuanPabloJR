@@ -1,0 +1,188 @@
+<html>
+
+<head>
+<title> Parcial Primer Corte </title>
+
+<style>
+html, body { margin: 0; padding: 0; overflow: hidden; }
+            #info {
+                position: absolute;
+                padding: 10px;
+                width: 100%;
+                text-align: center;
+                color: #FFFFFF;
+            }
+</style>
+ 
+</head>
+
+<body>
+<div id="info"> traslacion con "a" y "d" </div>
+
+<script src = "js/three.min.js"></script>
+<script src="js/controls/OrbitControls.js"></script>
+<script>
+
+var scene, aspect, camera, renderer, controls;
+var startTime= Date.now();
+
+var Punto1, Punto2, Punto3, Punto4;
+var material;
+
+var next = false;
+var back = false;
+
+var cuadrado1, cuadrado2;
+var punto1, punto2, punto3, punto4;
+
+
+init();
+animate();
+
+function init(){
+    scene = new THREE.Scene();
+	aspect = window.innerWidth / window.innerHeight;
+	camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+	controls = new THREE.OrbitControls( camera, renderer.domElement);
+	
+	var onKeyDown = function(event){
+	switch(event.keyCode){
+						
+						case 65:
+							back = true;
+							break;
+						case 68:
+							next = true;
+							break;
+					}
+				}
+				var onKeyUp = function(event){
+					switch(event.keyCode){
+						
+						case 65:
+							back = false;
+							break;
+						case 68:
+							next = false;
+							break;
+					}
+				}
+				document.addEventListener( 'keydown', onKeyDown, false );
+				document.addEventListener( 'keyup', onKeyUp, false );
+				
+				var size = 100;
+				var divisions = size;
+				var origin = new THREE.Vector3( 0, 0, 0 );
+				var x = new THREE.Vector3( 1, 0, 0 );
+				var y = new THREE.Vector3( 0, 1, 0 );
+				var z = new THREE.Vector3( 0, 0, 1 );
+				var color1 = new THREE.Color( 0xFFFFFF );
+				var color2 = new THREE.Color( 0x333333 );
+				
+				var axesHelper1 = new THREE.AxesHelper( size );
+				var axesHelper2 = new THREE.AxesHelper( size);
+				var axesHelper3 = new THREE.AxesHelper( size );
+				var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );
+				gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+	
+                
+
+                
+				var cuadradoMaterial = new THREE.MeshBasicMaterial({
+                color:0x8080FF,
+                side:THREE.DoubleSide
+                });
+				
+				var cuadrado1 = new THREE.Geometry();
+				
+				cuadrado1.vertices.push(new THREE.Vector3(10, 10, 0));
+                cuadrado1.vertices.push(new THREE.Vector3(40, 10, 0));
+                cuadrado1.vertices.push(new THREE.Vector3(40, 40, 0));
+                //cuadrado.vertices.push(new THREE.Vector3(10, 40, 0));
+                cuadrado1.faces.push(new THREE.Face3(0, 1, 2, 3));
+				
+				var cuadrado2 = new THREE.Geometry();
+				
+				cuadrado2.vertices.push(new THREE.Vector3(10, 10, 0));
+                //cuadrado2.vertices.push(new THREE.Vector3(40, 10, 0));
+                cuadrado2.vertices.push(new THREE.Vector3(40, 40, 0));
+                cuadrado2.vertices.push(new THREE.Vector3(10, 40, 0));
+                cuadrado2.faces.push(new THREE.Face3(0, 1, 2, 3));
+	
+	            cubo = new THREE.Mesh(cuadrado1, cuadradoMaterial);
+				cubo2 = new THREE.Mesh(cuadrado2, cuadradoMaterial);
+				cubo.add(cubo2);
+                cubo.position.set(0, 0, 0);
+                scene.add(cubo);
+				
+				
+				scene.add( gridHelperXZ );
+				
+				//addVertices(mesh);
+				
+				camera.position.x = 100;
+				camera.position.y = 100;
+				camera.position.z = 100;
+				camera.lookAt (origin);
+				
+				renderer.render( scene, camera);
+	
+	}
+	     function animate(){
+				render();
+				controls.update();
+				requestAnimationFrame( animate );
+			}
+		function render(){
+		var dtime= Date.now()-startTime;
+		
+		var tx=0, ty=0, tz=0;
+		
+		if(next){
+		tx=0; ty=0; tz=1;
+		console.log(cubo.matrix);
+		
+		}
+		if(back){
+		tx=0; ty=0; tz=-1;
+		console.log(cubo.matrix);
+		
+		
+		}
+		
+		
+		var t = new THREE.Matrix4();
+				t.set( 	1, 0, 0, tx,
+					0, 1, 0, ty, 
+					0, 0, 1, tz,
+					0, 0, 0, 1	);
+				console.lo
+				cubo.matrix.multiply(t);
+		       
+				
+				var tempMatrix = new THREE.Matrix4();
+				tempMatrix.copyPosition(cubo.matrix);
+				cubo.applyMatrix( new THREE.Matrix4().getInverse(tempMatrix) );
+				cubo.applyMatrix( tempMatrix );
+				
+				
+				
+				
+				 camera.lookAt(0,0,0);
+				renderer.render( scene, camera );
+				
+				
+				
+				
+		}	
+
+
+
+</script>
+	</body>
+
+
+</html>
