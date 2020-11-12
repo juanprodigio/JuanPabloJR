@@ -18,6 +18,7 @@
 		<div id="info"> movimiento -> WASD <br /> cambio de camara = c </div>
 		<script src="js/three.min.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
+		<script src   =  "js/PointerLockControls.js"></script>
 		<script>
 			var scene, aspect, renderer, controls, camera,TPcamera, FPcamera, MAPcamera;
 			var startTime = Date.now();
@@ -100,6 +101,17 @@
 				
 				document.addEventListener( 'keydown', onKeyDown, false );
 				document.addEventListener( 'keyup', onKeyUp, false );
+				
+				var controls = new THREE.PointerLockControls(camera, document.body);
+		        document.body.addEventListener("click", function(){
+			    controls.lock();
+		        });
+		        controls.addEventListener("lock", function(){
+
+		        });
+		        controls.addEventListener("unlock", function(){
+
+		        });
 				
 				var origin = new THREE.Vector3(0,0,0);
 				var x = new THREE.Vector3( 1, 0, 0 );
@@ -344,6 +356,7 @@
 				renderer.setScissor( 4*(w/5), 4*(h/5), w/5, h/5 );
 				renderer.setScissorTest( true );
 				renderer.render( scene, MAPcamera );
+				
 				
 			}
 		</script>
