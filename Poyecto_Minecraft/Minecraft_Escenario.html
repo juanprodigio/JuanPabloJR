@@ -55,7 +55,7 @@
 		block.position.z = this.z;
 		
 		var edges = new THREE.EdgesGeometry(blockBox); //Linea
-		var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color : 0xffffff})); //material de linea
+		var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color : 0x000000})); //material de linea
 		scene.add(line);
 		line.position.x = this.x;
 		line.position.y = this.y - 10;
@@ -76,7 +76,7 @@
 		
 		     xoff =0;
 			 
-		     for(var z=0; z<30; z++){
+		     for(var z=0; z<100; z++){
 			 
 				 var v =Math.round( noise.perlin2(xoff,zoff) * amplitude / 5 )*5;
 				 blocks.push(new Block(x * 5 ,v ,z * 5));
@@ -94,6 +94,25 @@
 		    
 		}
 		
+		var keys = [];
+		document.addEventListener("keydown", function(e){
+			keys.push(e.key);
+			if(e.key == " " ){
+				vely = -2.5;
+			}
+		});
+		document.addEventListener("keyup", function(e){
+			var newArr = [];
+			for(var i = 0; i < keys.length; i++){
+				if(keys[i] != e.key){
+					newArr.push(keys[i]);
+				}
+			}
+			keys = newArr;
+		});
+		
+		
+		
 		//Mover la camara con el mouse
 		var controls = new THREE.PointerLockControls(camera, document.body);
 		document.body.addEventListener("click", function(){
@@ -105,11 +124,42 @@
 		controls.addEventListener("unlock", function(){
 
 		});
+		
+		var vel = 0.5;
+		var vely = 0;
+		var acc = 0.3;
 		function update(){
 		
+		if(keys.includes("w")){
+		    controls.moveForward(vel);
+		}
+		if(keys.includes("a")){
+		    controls.moveForward(-1*vel);
+		}
+		if(keys.includes("s")){
+		    controls.moveForward(-1*vel);
+		}
+		if(keys.includes("d")){
+		    controls.moveForward(vel);
+		}
+		camera.position.y = camera.position.y - vely; 
+		vely = vely + acc;
+		
+		for(var i=0; i< blocks.length; i++){
+		     if(camera.position.x <= blocks[i].x +5 && camera.position.x >= blocks[i].x &&
+			    camera.position.z <= blocks[i].z + 5 && camera.position.z >= blocks[i].z){
+		     if(camera.position.y < blocks[i].y){
+			     camera.position.y = blocks[i].y; 
+				 vely =0;
+			 }
+		  } 
+		}
 		
 		
 		}
+		
+		
+		
 		
 		// Resize Window
 		window.addEventListener("resize", function(){
